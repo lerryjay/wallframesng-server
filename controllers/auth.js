@@ -3,6 +3,12 @@ const User = require("../models/user");
 exports.createUser = async (req, res) => {
   const { telephone, fullname } = req.body;
   const { email } = req.auth
+  const newUser = await new User({ email, name: fullname, telephone }).save();
+  res.json(newUser);
+};
+
+exports.createAdmin = async (req, res) => {
+  const { telephone, fullname, email } = req.body;
   const newUser = await new User({ email, name: fullname, telephone, role: 'admin' }).save();
   res.json(newUser);
 };
