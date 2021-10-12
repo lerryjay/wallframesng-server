@@ -1,18 +1,15 @@
 const express = require("express");
-const { auth } = require("../firebase");
-
 const router = express.Router();
 
 // middlewares
-const { authCheck, adminCheck } = require("../middlewares/auth");
+const { authCheck, vendorCheck } = require("../middlewares/auth");
+// controllers 
+const { Order, Product } = require("../controllers");
 
-const { createVendor } = require("../controllers/vendor");
+// //add new user account
+router.get("/vendor/products", authCheck, vendorCheck, Product.listByVendor);
+router.get("/vendor/orders", authCheck, vendorCheck, Order.ordersByVendor);
 
-// routes for admin accounts
-//add new user account
-// router.post("/vendor", createVendor );
-
-
-// routes for orders by admin
+router.patch("/vendor/order/:orderId", authCheck, vendorCheck, Order.updateStatus);
 
 module.exports = router;

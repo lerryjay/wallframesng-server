@@ -4,6 +4,7 @@ const { ObjectId } = mongoose.Schema;
 
 const orderSchema = new mongoose.Schema(
   {
+    amount: Number,
     products: [
       {
         product: {
@@ -11,16 +12,42 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
         },
         count: Number,
+        vendor_id: {
+          type: ObjectId,
+          ref: "User",
+        },
         color: String,
       },
     ],
-    paymentIntent: {},
+    payment: {
+      reference: String,
+      amount: Number,
+      currency: {
+        type: String,
+        default: "NGN"
+      },
+      method: {
+        type: String,
+        default: "Cash",
+        enum: ["Cash", "Interswitch"]
+      },
+      createdAt: String,
+      updatedAt: String,
+      status: {
+        type: String,
+        enum: [
+          "Pending",
+          "Paid",
+        ],
+      }
+    },
+
     orderStatus: {
       type: String,
       default: "Not Processed",
       enum: [
         "Not Processed",
-        "processing",
+        "Processing",
         "Dispatched",
         "Cancelled",
         "Completed",

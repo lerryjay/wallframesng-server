@@ -5,21 +5,19 @@ const router = express.Router();
 const { authCheck, adminCheck } = require("../middlewares/auth");
 
 // controller
-const {
-  create,
-  read,
-  update,
-  remove,
-  list,
-  getSubs,
-} = require("../controllers/category");
+const { Category } = require("../controllers");
 
 // routes
-router.post("/category", authCheck, adminCheck, create);
-router.get("/categories", list);
-router.get("/category/:slug", read);
-router.put("/category/:slug", authCheck, adminCheck, update);
-router.delete("/category/:slug", authCheck, adminCheck, remove);
-router.get("/category/subs/:_id", getSubs);
+router.get("/categories", Category.list);
+router.get("/category/sub", Category.listSub);
+router.get("/category/:slug", Category.getCategory);
+router.get("/category/sub/:slug", Category.fetchSub);
+//requires admin permission
+router.post("/category", authCheck, adminCheck, Category.create);
+router.post("/category/sub", authCheck, adminCheck, Category.createSub);
+router.patch("/category/:slug", authCheck, adminCheck, Category.update);
+router.patch("/category/sub/:slug", authCheck, adminCheck, Category.updateSub);
+router.delete("/category/:slug", authCheck, adminCheck, Category.remove);
+router.delete("/category/sub/:slug", authCheck, adminCheck, Category.removeSub);
 
 module.exports = router;

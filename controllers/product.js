@@ -4,7 +4,7 @@ const slugify = require("slugify");
 
 exports.create = async (req, res) => {
   try {
-    console.log(req.body);
+    if (req.user.role === "vendor") req.body.vendor_id = req.user._id
     req.body.slug = slugify(req.body.title);
     const newProduct = await new Product(req.body).save();
     res.json(newProduct);
@@ -18,7 +18,11 @@ exports.create = async (req, res) => {
 };
 
 exports.listAll = async (req, res) => {
-  let products = await Product.find({})
+  let where = {};
+  if (req.query.vendor_id) where.vendor_id = req.query.vendor_id;
+  if (req.query.category_id) where.category_id = req.query.category_id;
+
+  let products = await Product.find(where)
     .limit(parseInt(req.params.count))
     .populate("category")
     .populate("subs")
@@ -86,6 +90,21 @@ exports.update = async (req, res) => {
 // };
 
 // WITH PAGINATION
+
+exports.listByVendor = async (req, res) => {
+  let where = { vendor_id: req.user._id };
+  if (req.query.category_id) where.category_id = req.query.category_id;
+
+  let products = await Product.find(where)
+    .limit(parseInt(req.params.count))
+    .populate("category")
+    .populate("subs")
+    .sort([["createdAt", "desc"]])
+    .exec();
+  res.json(products);
+};
+
+
 exports.list = async (req, res) => {
   // console.table(req.body);
   try {
@@ -277,7 +296,7 @@ const handleDimension = async (req, res, dimension) => {
   res.json(products);
 };
 
-exports.searchFilters = async (req, res) => {
+exports.search = async (req, res) => {
   const {
     query,
     price,
@@ -287,7 +306,7 @@ exports.searchFilters = async (req, res) => {
     shipping,
     color,
     dimension,
-  } = req.body;
+  } = req.query;
 
   if (query) {
     console.log("query --->", query);

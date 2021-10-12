@@ -12,6 +12,7 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^1.4.1",
     "@stripe/stripe-js": "^1.15.1",
+    "axios": "^0.22.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.25.1",
     "cors": "^2.8.5",

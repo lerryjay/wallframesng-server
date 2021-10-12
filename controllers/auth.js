@@ -1,5 +1,20 @@
 const User = require("../models/user");
 
+exports.createUser = async (req, res) => {
+  const { telephone, fullname } = req.body;
+  const { email } = req.auth
+  const newUser = await new User({ email, name: fullname, telephone, role: 'admin' }).save();
+  res.json(newUser);
+};
+
+
+exports.createVendor = async (req, res) => {
+  const { telephone, storename } = req.body;
+  const { email } = req.auth
+  const newUser = await new User({ email, name: storename, telephone, role: "vendor" }).save();
+  res.json(newUser);
+};
+
 exports.createOrUpdateUser = async (req, res) => {
   const { name, picture, email } = req.user;
 
@@ -23,8 +38,10 @@ exports.createOrUpdateUser = async (req, res) => {
 };
 
 exports.currentUser = async (req, res) => {
-  User.findOne({ email: req.user.email }).exec((err, user) => {
+  console.log(req.auth)
+  User.findOne({ email: req.auth.email }).exec((err, user) => {
     if (err) throw new Error(err);
     res.json(user);
   });
 };
+
